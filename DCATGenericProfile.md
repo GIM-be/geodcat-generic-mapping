@@ -22,10 +22,10 @@
 
 
 - **Status** refer to the current state of the implementation [dcat-iso19139.xsl](https://github.com/geonetwork/geonetwork-microservices/blob/main/modules/services/ogc-api-records/src/main/resources/xslt/ogcapir/formats/dcat/dcat-iso19139.xsl)
-  - ❌ : Not implemented
+  - ❌ : Not implemented / To Implement
   - 🚧 : Partially implemented
-  - ✅ : Implemented
-  - ⭕ : Implemented but need to change
+  - ✅ : Implemented / OK
+  - ⭕ : Wrongly implemented, need changes
   - ❔ : Unknown, to define
 
 ### dcat:Catalog
