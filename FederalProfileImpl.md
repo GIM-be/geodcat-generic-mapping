@@ -1,5 +1,28 @@
 # Status of federal profile implementation
 
+- [Status of federal profile implementation](#status-of-federal-profile-implementation)
+  - [Links](#links)
+  - [DCAT class mapping](#dcat-class-mapping)
+    - [Legend](#legend)
+    - [dcat:Catalog](#dcatcatalog)
+    - [dcat:CatalogRecord](#dcatcatalogrecord)
+    - [dcat:Dataset](#dcatdataset)
+    - [dcat:Distribution](#dcatdistribution)
+    - [dcat:DataService](#dcatdataservice)
+  - [Examples](#examples)
+    - [Example vcard:Organization](#example-vcardorganization)
+    - [Example dcat:theme](#example-dcattheme)
+    - [Example dct:subject](#example-dctsubject)
+    - [Example dct:accrualPeriodicity](#example-dctaccrualperiodicity)
+    - [Example dcat:landingPage](#example-dcatlandingpage)
+    - [Example dct:language](#example-dctlanguage)
+    - [Example dataset dct:conformsTo](#example-dataset-dctconformsto)
+    - [Example dct:source](#example-dctsource)
+    - [Example dcat:spatialResolutionInMeters](#example-dcatspatialresolutioninmeters)
+    - [Example dct:accessRights](#example-dctaccessrights)
+    - [Example foaf:Organization](#example-foaforganization)
+    - [Example adms:representationTechnique](#example-admsrepresentationtechnique)
+
 ## Links
 
 - [Federal profile](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md)
@@ -32,45 +55,45 @@ TODO
 
 [Annexe document](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#b-dcat--dataset)
 
-| name                           | Init status | Current status | Comment                                                                                                                                                                                                                                                   |
-|--------------------------------|-------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| @rdf:about                     | ❌           |                | Must be mapped to the resolvable URL of the metadata RDF. E.g: `<apiUrl>/collections/main/items/<uuid>`                                                                                                                                                   |
-| dct:title                      | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                            |
-| dct:description                | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                            |
-| dcat:contactPoint              | ⭕           |                | Currently implemented but mapped to dcat:CatalogRecord instead of dcat:Dataset                                                                                                                                                                            |
-| dcat:distribution              | 🚧          |                | See distribution section                                                                                                                                                                                                                                  |
-| dcat:keyword                   | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                            |
-| dcat:theme                     | ❌           |                | See [Example dcat:theme](#example-dcattheme)                                                                                                                                                                                                              |
-| dct:subject                    | 🚧          |                | Currently only map the subject URI without labels. See [Example dct:subject](#example-dctsubject)                                                                                                                                                         |
-| dct:spatial                    | 🚧          |                | Missing the "http://www.opengis.net/ont/geosparql#geoJSONLiteral" format + The `locn:geometry` shouldn't be direct child of `dct:spatial` but insead be inside a `dct:Location` element. See https://github.com/belgif/inspire-dcat/blob/main/exemple.rdf |
-| dct:temporal                   | ✅           |                |                                                                                                                                                                                                                                                           |
-| dct:created                    | ✅           |                |                                                                                                                                                                                                                                                           |
-| dct:modified                   | ✅           |                |                                                                                                                                                                                                                                                           |
-| dct:issued                     | ✅           |                |                                                                                                                                                                                                                                                           |
-| foaf:page                      | ⭕           |                | Currently mapped to both 'information' and 'search' functions but should only be 'information' + all gmd:protocol values are accepted but only 'WWW:LINK-1.0-http--link' should                                                                           |
-| dct:accrualPeriodicity         | 🚧          |                | Currently only map the accrualPeriodicity URI without labels. See [Example dct:accrualPeriodicity](#example-dctaccrualPeriodicity)                                                                                                                        |
-| dct:identifier                 | ⭕           |                | The namespacing using the gmd:codeSpace must be removed + the rdf:datatype attribute must be removed                                                                                                                                                      |
-| dcat:landingPage               | ❌           |                | Current implementation must be fully removed + New mapping must be implemented. See [Example dcat:landingPage](#example-dcatlandingPage)                                                                                                                  |
-| dct:language                   | ⭕           |                | Currently only map the first resource language and not all of them + Only map the language URI without labels. See [Example dct:language](#example-dctlanguage)                                                                                           |
-| dct:provenance                 | ✅           |                |                                                                                                                                                                                                                                                           |
-| dct:conformsTo                 | ❌           |                | Remove current implementation + Remove implementation of prov:wasUsedBy + Implement mapping. See [Example dataset dct:conformsTo](#example-dataset-dctconformsTo)                                                                                         |
-| dct:source                     | ❌           |                | See [Example dct:source](#example-dctsource)                                                                                                                                                                                                              |
-| dcat:spatialResolutionInMeters | ⭕ - ❔       |                | Remove current implementation of `<xsl:template name="SpatialResolution" />` + Implement mapping. See [Example dcat:spatialResolutionInMeters](example-dcatspatialResolutionInMeters)                                                                     |
-| dqv:hasQualityMeasurement      | ❌ - ❔       |                | See [Example dcat:spatialResolutionInMeters](example-dcatspatialResolutionInMeters)                                                                                                                                                                       |
-| dct:accessRights               | ⭕ - ❔       |                | Mapped xpath is currently incorrect + Constraints based on the LimitationOnPublicAccess codelist must be mapped to a thesaurus. See [Example dct:accessRights](#example-dctaccessRights)                                                                  |
-| adms:sample                    | ✅ - ❔       |                |                                                                                                                                                                                                                                                           |
-| dct:publisher                  |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:custodian              |             |                |                                                                                                                                                                                                                                                           |
-| dct:creator                    |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:distributor            |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:originator             |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:principalInvestigator  |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:processor              |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:resourceProvider       |             |                |                                                                                                                                                                                                                                                           |
-| geodcat:user                   |             |                |                                                                                                                                                                                                                                                           |
-| dct:rightsHolder               |             |                |                                                                                                                                                                                                                                                           |
-| dct:license                    |             |                |                                                                                                                                                                                                                                                           |
-| adms:representationTechnique   |             |                |                                                                                                                                                                                                                                                           |
+| name                           | Init status | Current status | Comment                                                                                                                                                                                                                                                                                                                                                                                  |
+|--------------------------------|-------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| @rdf:about                     | ❌           |                | Must be mapped to the resolvable URL of the metadata RDF. E.g: `<apiUrl>/collections/main/items/<uuid>`                                                                                                                                                                                                                                                                                  |
+| dct:title                      | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
+| dct:description                | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
+| dcat:contactPoint              | ⭕           |                | Currently implemented but mapped to dcat:CatalogRecord instead of dcat:Dataset + Currently implement a logic to define what `vcard:` class must be used between `vcard:Individual`, `vcard:Organization` or `vcard:Kind`. The logic must be simplified to always use `vcard:Organization` and the mapping must be improved. See [Example vcard:Organization](#example-vcardOrganization) |
+| dcat:distribution              | 🚧          |                | See distribution section                                                                                                                                                                                                                                                                                                                                                                 |
+| dcat:keyword                   | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
+| dcat:theme                     | ❌           |                | See [Example dcat:theme](#example-dcattheme)                                                                                                                                                                                                                                                                                                                                             |
+| dct:subject                    | 🚧          |                | Currently only map the subject URI without labels. See [Example dct:subject](#example-dctsubject)                                                                                                                                                                                                                                                                                        |
+| dct:spatial                    | 🚧          |                | Missing the "http://www.opengis.net/ont/geosparql#geoJSONLiteral" format + The `locn:geometry` shouldn't be direct child of `dct:spatial` but insead be inside a `dct:Location` element. See https://github.com/belgif/inspire-dcat/blob/main/exemple.rdf                                                                                                                                |
+| dct:temporal                   | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| dct:created                    | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| dct:modified                   | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| dct:issued                     | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| foaf:page                      | ⭕           |                | Currently mapped to both 'information' and 'search' functions but should only be 'information' + all gmd:protocol values are accepted but only 'WWW:LINK-1.0-http--link' should                                                                                                                                                                                                          |
+| dct:accrualPeriodicity         | 🚧          |                | Currently only map the accrualPeriodicity URI without labels. See [Example dct:accrualPeriodicity](#example-dctaccrualPeriodicity)                                                                                                                                                                                                                                                       |
+| dct:identifier                 | ⭕           |                | The namespacing using the gmd:codeSpace must be removed + the rdf:datatype attribute must be removed                                                                                                                                                                                                                                                                                     |
+| dcat:landingPage               | ❌           |                | Current implementation must be fully removed + New mapping must be implemented. See [Example dcat:landingPage](#example-dcatlandingPage)                                                                                                                                                                                                                                                 |
+| dct:language                   | ⭕           |                | Currently only map the first resource language and not all of them + Only map the language URI without labels. See [Example dct:language](#example-dctlanguage)                                                                                                                                                                                                                          |
+| dct:provenance                 | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| dct:conformsTo                 | ❌           |                | Remove current implementation + Remove implementation of prov:wasUsedBy + Implement mapping. See [Example dataset dct:conformsTo](#example-dataset-dctconformsTo)                                                                                                                                                                                                                        |
+| dct:source                     | ❌           |                | See [Example dct:source](#example-dctsource)                                                                                                                                                                                                                                                                                                                                             |
+| dcat:spatialResolutionInMeters | ⭕ - ❔       |                | Remove current implementation of `<xsl:template name="SpatialResolution" />` + Implement mapping. See [Example dcat:spatialResolutionInMeters](#example-dcatspatialResolutionInMeters)                                                                                                                                                                                                   |
+| dqv:hasQualityMeasurement      | ❌ - ❔       |                | See [Example dcat:spatialResolutionInMeters](#example-dcatspatialResolutionInMeters)                                                                                                                                                                                                                                                                                                     |
+| dct:accessRights               | ⭕ - ❔       |                | Mapped xpath is currently incorrect + Constraints based on the LimitationOnPublicAccess codelist must be mapped to a thesaurus. See [Example dct:accessRights](#example-dctaccessRights)                                                                                                                                                                                                 |
+| adms:sample                    | ✅ - ❔       |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| dct:publisher                  | ⭕           |                | Currently implement a logic to define what `foaf:` class must be used between `foaf:Person`, `foaf:Organization` or `foaf:Agent`. The logic must be simplified to always use the `foaf:Organization` and the mapping improved. See [Example foaf:Organization](#example-foafOrganization)                                                                                                |
+| geodcat:custodian              | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| dct:creator                    | ⭕           |                | Same comment as `dct:publisher`                                                                                                                                                                                                                                                                                                                                                          |
+| geodcat:distributor            | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| geodcat:originator             | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| geodcat:principalInvestigator  | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| geodcat:processor              | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| geodcat:resourceProvider       | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| geodcat:user                   | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
+| dct:rightsHolder               | ⭕           |                | Currently mapped to role 'owner'. Must be mapped to role 'user' with a definition for `gmd:organizationName` + Same comment as `dct:publisher`                                                                                                                                                                                                                                           |
+| dct:license                    | ⭕           |                | Currently, too much fields are mapped to dct:license. The XPATH must be updated                                                                                                                                                                                                                                                                                                          |
+| adms:representationTechnique   | ⭕           |                | Current URL is incorrect "https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationTypeCode" must become "https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType" + Currently, only the URI is mapped without the labels. See [Example adms:representationTechnique](#example-admsrepresentationTechnique)                                                  |
 
 ### dcat:Distribution
 
@@ -82,6 +105,164 @@ TODO
 
 
 ## Examples
+
+### Example vcard:Organization
+
+- [Annexe document: vcard:Organization](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#m-vcard-organization)
+- [Annexe document: vcard:Address](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#n-vcard-address)
+
+ISO19139:
+```xml
+<gmd:contact>
+  <gmd:CI_ResponsibleParty gmd:CI_ResponsibleParty="http://www.isotc211.org/2005/gmd http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd">
+    <gmd:individualName>
+      <gco:CharacterString>Benoît Fricheteau</gco:CharacterString>
+    </gmd:individualName>
+    <gmd:organisationName gmd:organisationName="gmd:PT_FreeText_PropertyType">
+      <gco:CharacterString>FPS Finance - General Administration of Patrimonial Documentation (GAPD)</gco:CharacterString>
+      <gmd:PT_FreeText>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#EN">FPS Finance - General Administration of Patrimonial Documentation (GAPD)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#FR">SPF Finances - Administration Générale de la Documentation Patrimoniale (AGDP)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#NL">FOD Financien - Algemene Administratie van de Patrimoniumdocumentatie (AAPD)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#DE">FOD Finanzen - Generalverwaltung Vermögensdokumentation (GVVD)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+      </gmd:PT_FreeText>
+    </gmd:organisationName>
+    <gmd:contactInfo>
+      <gmd:CI_Contact>
+        <gmd:address>
+          <gmd:CI_Address>
+            <gmd:deliveryPoint gmd:deliveryPoint="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>Koning Albert II laan, 33 bus 50</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">Koning Albert II laan, 33 bus 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">Boulevard du Roi Albert II, 33 bte 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">Koning Albert II laan, 33 bus 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">Boulevard du Roi Albert II, 33 bte 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:deliveryPoint>
+            <gmd:city gmd:city="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>Schaarbeek</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">Schaarbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">Schaerbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">Schaarbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">Schaerbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:city>
+            <gmd:postalCode>
+              <gco:CharacterString>1030</gco:CharacterString>
+            </gmd:postalCode>
+            <gmd:country gmd:country="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>Belgium</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">Belgium</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">Belgique</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">België</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">Belgien</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:country>
+            <gmd:electronicMailAddress>
+              <gco:CharacterString>datadelivery@minfin.fed.be</gco:CharacterString>
+            </gmd:electronicMailAddress>
+          </gmd:CI_Address>
+        </gmd:address>
+        <gmd:onlineResource>
+          <gmd:CI_OnlineResource>
+            <gmd:linkage>
+              <gmd:URL>https://finance.belgium.be/en/experts-partners/open-data-patrimony</gmd:URL>
+            </gmd:linkage>
+            <gmd:name gmd:name="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>https://finance.belgium.be/en/experts-partners/open-data-patrimony</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">https://finance.belgium.be/en/experts-partners/open-data-patrimony</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">https://finances.belgium.be/fr/experts_partenaires/donnees-ouvert-patrimoine</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">https://financien.belgium.be/nl/experten_partners/open-patrimoniumdata</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">https://finance.belgium.be/en/experts-partners/open-data-patrimony</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:name>
+          </gmd:CI_OnlineResource>
+        </gmd:onlineResource>
+      </gmd:CI_Contact>
+    </gmd:contactInfo>
+    <gmd:role>
+      <gmd:CI_RoleCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact"/>
+    </gmd:role>
+  </gmd:CI_ResponsibleParty>
+</gmd:contact>
+```
+
+Expected GeoDCAT:
+```xml
+<dcat:contactPoint>
+  <vcard:Organization>
+    <vcard:organization-name xml:lang="en">FPS Finance - General Administration of Patrimonial Documentation (GAPD)</vcard:organization-name>
+    <vcard:organization-name xml:lang="fr">SPF Finances - Administration Générale de la Documentation Patrimoniale (AGDP)</vcard:organization-name>
+    <vcard:organization-name xml:lang="nl">FOD Financien - Algemene Administratie van de Patrimoniumdocumentatie (AAPD)</vcard:organization-name>
+    <vcard:organization-name xml:lang="de">FOD Finanzen - Generalverwaltung Vermögensdokumentation (GVVD)</vcard:organization-name>
+    <vcard:hasEmail rdf:resource="datadelivery@minfin.fed.be"/>
+    <vcard:hasURL rdf:resource="https://finance.belgium.be/en/experts-partners/open-data-patrimony"/>
+    <vcard:hasAddress>
+      <vcard:Address>
+        <vcard:street-address xml:lang="en">Koning Albert II laan, 33 bus 50</vcard:street-address>
+        <vcard:street-address xml:lang="fr">Boulevard du Roi Albert II, 33 bte 50</vcard:street-address>
+        <vcard:street-address xml:lang="nl">Koning Albert II laan, 33 bus 50</vcard:street-address>
+        <vcard:street-address xml:lang="de">Boulevard du Roi Albert II, 33 bte 50</vcard:street-address>
+        <vcard:locality xml:lang="en">Schaarbeek</vcard:locality>
+        <vcard:locality xml:lang="fr">Schaerbeek</vcard:locality>
+        <vcard:locality xml:lang="nl">Schaarbeek</vcard:locality>
+        <vcard:locality xml:lang="de">Schaerbeek</vcard:locality>
+        <vcard:postal-code>1030</vcard:postal-code>
+        <vcard:country-name xml:lang="en">Belgium</vcard:country-name>
+        <vcard:country-name xml:lang="fr">Belgique</vcard:country-name>
+        <vcard:country-name xml:lang="nl">België</vcard:country-name>
+        <vcard:country-name xml:lang="de">Belgien</vcard:country-name>
+      </vcard:Address>
+    </vcard:hasAddress>
+  </vcard:Organization>  
+</dcat:contactPoint>
+```
+
+---
 
 ### Example dcat:theme
 
@@ -189,7 +370,9 @@ GeoDCAT
 </dcat:Dataset>
 ```
 
-#### Example dct:subject
+---
+
+### Example dct:subject
 
 ISO19139:
 
@@ -226,7 +409,9 @@ See https://inspire.ec.europa.eu/metadata-codelist/TopicCategory/ for complete l
 - NL: https://inspire.ec.europa.eu/metadata-codelist/TopicCategory/TopicCategory.nl.rdf
 - DE: https://inspire.ec.europa.eu/metadata-codelist/TopicCategory/TopicCategory.de.rdf
 
-#### Example dct:accrualPeriodicity
+---
+
+### Example dct:accrualPeriodicity
 
 ISO19139:
 
@@ -262,6 +447,8 @@ Expected GeoDCAT:
 
 See http://publications.europa.eu/resource/authority/frequency for list of labels.
 
+---
+
 ### Example dcat:landingPage
 
 ISO19139:
@@ -277,6 +464,8 @@ Expected GeoDCAT:
 ```xml
 <dcat:landingPage rdf:resource="https://www.geo.be/catalog/details/629ad470-71dc-11eb-af47-3448ed25ad7c"/>
 ```
+
+---
 
 ### Example dct:language
 
@@ -356,6 +545,8 @@ Expected GeoDCAT:
 
 See http://publications.europa.eu/resource/authority/language for URL and labels.
 
+---
+
 ### Example dataset dct:conformsTo
 
 ISO19139:
@@ -411,6 +602,8 @@ Expected GeoDCAT result:
 </dct:conformsTo>
 ```
 
+---
+
 ### Example dct:source
 
 ISO19139:
@@ -435,6 +628,8 @@ Expected GeoDCAT:
 ```xml
 <dct:source rdf:resource="<apiUrl>/collections/main/items/fb1e2993-2020-428c-9188-eb5f75e284b9" />
 ```
+
+---
 
 ### Example dcat:spatialResolutionInMeters
 
@@ -462,6 +657,8 @@ Expected GeoDCAT:
   </dqv:QualityMeasurement> 
 </dcat:spatialResolutionInMeters>
 ```
+
+---
 
 ### Example dct:accessRights
 
@@ -579,3 +776,199 @@ Expected GeoDCAT:
   </dct:RightsStatement>
 </dct:accessRights>
 ```
+
+
+---
+
+### Example foaf:Organization
+
+[Annexe document: foaf:Organization](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#e-foaf-organization)  
+[Annexe document: locn:Address](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#g-locn-address)  
+
+ISO19139:
+```xml
+<gmd:pointOfContact>
+  <gmd:CI_ResponsibleParty gmd:CI_ResponsibleParty="http://www.isotc211.org/2005/gmd http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd">
+    <gmd:individualName>
+      <gco:CharacterString>Benoît Fricheteau</gco:CharacterString>
+    </gmd:individualName>
+    <gmd:organisationName gmd:organisationName="gmd:PT_FreeText_PropertyType">
+      <gco:CharacterString>FPS Finance - General Administration of Patrimonial Documentation (GAPD)</gco:CharacterString>
+      <gmd:PT_FreeText>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#EN">FPS Finance - General Administration of Patrimonial Documentation (GAPD)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#FR">SPF Finances - Administration Générale de la Documentation Patrimoniale (AGDP)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#NL">FOD Financien - Algemene Administratie van de Patrimoniumdocumentatie (AAPD)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+        <gmd:textGroup>
+          <gmd:LocalisedCharacterString locale="#DE">FOD Finanzen - Generalverwaltung Vermögensdokumentation (GVVD)</gmd:LocalisedCharacterString>
+        </gmd:textGroup>
+      </gmd:PT_FreeText>
+    </gmd:organisationName>
+    <gmd:contactInfo>
+      <gmd:CI_Contact>
+        <gmd:address>
+          <gmd:CI_Address>
+            <gmd:deliveryPoint gmd:deliveryPoint="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>Koning Albert II laan, 33 bus 50</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">Koning Albert II laan, 33 bus 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">Boulevard du Roi Albert II, 33 bte 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">Koning Albert II laan, 33 bus 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">Boulevard du Roi Albert II, 33 bte 50</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:deliveryPoint>
+            <gmd:city gmd:city="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>Schaarbeek</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">Schaarbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">Schaerbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">Schaarbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">Schaerbeek</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:city>
+            <gmd:postalCode>
+              <gco:CharacterString>1030</gco:CharacterString>
+            </gmd:postalCode>
+            <gmd:country gmd:country="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>Belgium</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">Belgium</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">Belgique</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">België</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">Belgien</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:country>
+            <gmd:electronicMailAddress>
+              <gco:CharacterString>datadelivery@minfin.fed.be</gco:CharacterString>
+            </gmd:electronicMailAddress>
+          </gmd:CI_Address>
+        </gmd:address>
+        <gmd:onlineResource>
+          <gmd:CI_OnlineResource>
+            <gmd:linkage>
+              <gmd:URL>https://finance.belgium.be/en/experts-partners/open-data-patrimony</gmd:URL>
+            </gmd:linkage>
+            <gmd:name gmd:name="gmd:PT_FreeText_PropertyType">
+              <gco:CharacterString>https://finance.belgium.be/en/experts-partners/open-data-patrimony</gco:CharacterString>
+              <gmd:PT_FreeText>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#EN">https://finance.belgium.be/en/experts-partners/open-data-patrimony</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#FR">https://finances.belgium.be/fr/experts_partenaires/donnees-ouvert-patrimoine</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#NL">https://financien.belgium.be/nl/experten_partners/open-patrimoniumdata</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                  <gmd:LocalisedCharacterString locale="#DE">https://finance.belgium.be/en/experts-partners/open-data-patrimony</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+              </gmd:PT_FreeText>
+            </gmd:name>
+          </gmd:CI_OnlineResource>
+        </gmd:onlineResource>
+      </gmd:CI_Contact>
+    </gmd:contactInfo>
+    <gmd:role>
+      <gmd:CI_RoleCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#CI_RoleCode" codeListValue="publisher"/>
+    </gmd:role>
+  </gmd:CI_ResponsibleParty>
+</gmd:pointOfContact>
+```
+
+Expected GeoDCAT:
+```xml
+<dct:publisher>
+  <foaf:Organization>
+    <foaf:name xml:lang="en">FPS Finance - General Administration of Patrimonial Documentation (GAPD)</foaf:name>
+    <foaf:name xml:lang="fr">SPF Finances - Administration Générale de la Documentation Patrimoniale (AGDP)</foaf:name>
+    <foaf:name xml:lang="nl">FOD Financien - Algemene Administratie van de Patrimoniumdocumentatie (AAPD)</foaf:name>
+    <foaf:name xml:lang="de">FOD Finanzen - Generalverwaltung Vermögensdokumentation (GVVD)</foaf:name>
+    <!-- dct:type ? -->
+    <foaf:mbox rdf:resource="datadelivery@minfin.fed.be"/>
+    <foaf:workplaceHomepage rdf:resource="https://finance.belgium.be/en/experts-partners/open-data-patrimony"/>
+    <locn:address>
+      <locn:Address>
+        <locn:thoroughfare xml:lang="en">Koning Albert II laan, 33 bus 50</locn:thoroughfare>
+        <locn:thoroughfare xml:lang="fr">Boulevard du Roi Albert II, 33 bte 50</locn:thoroughfare>
+        <locn:thoroughfare xml:lang="nl">Koning Albert II laan, 33 bus 50</locn:thoroughfare>
+        <locn:thoroughfare xml:lang="de">Boulevard du Roi Albert II, 33 bte 50</locn:thoroughfare>
+        <locn:postName xml:lang="en">Schaarbeek</locn:postName>
+        <locn:postName xml:lang="fr">Schaerbeek</locn:postName>
+        <locn:postName xml:lang="nl">Schaarbeek</locn:postName>
+        <locn:postName xml:lang="de">Schaerbeek</locn:postName>
+        <locn:postCode>1030</locn:postCode>
+        <locn:adminUnitL1 xml:lang="en">Belgium</locn:adminUnitL1>
+        <locn:adminUnitL1 xml:lang="fr">Belgique</locn:adminUnitL1>
+        <locn:adminUnitL1 xml:lang="nl">België</locn:adminUnitL1>
+        <locn:adminUnitL1 xml:lang="de">Belgien</locn:adminUnitL1>
+      </locn:Address>
+    </locn:address>
+  </foaf:Organization>
+</dct:publisher>
+```
+
+
+---
+
+### Example adms:representationTechnique
+
+ISO19139:
+```xml
+<gmd:spatialRepresentationType>
+  <gmd:MD_SpatialRepresentationTypeCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector"/>
+</gmd:spatialRepresentationType>
+```
+
+Actual GeoDCAT:
+```xml
+<adms:representationTechnique rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationTypeCode/vector"/>
+```
+
+Expected GeoDCAT:
+```xml
+<adms:representationTechnique>
+  <skos:Concept rdf:about="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector">
+    <skos:prefLabel xml:lang="en">Vector</skos:prefLabel>
+    <skos:prefLabel xml:lang="fr">Vector</skos:prefLabel>
+    <skos:prefLabel xml:lang="nl">Vector</skos:prefLabel>
+    <skos:prefLabel xml:lang="de">Vector</skos:prefLabel>
+    <skos:inScheme rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType"/>
+  </skos:Concept>
+</adms:representationTechnique>
+```
+
+See https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType for complete list of possible values with labels:
+- EN: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.en.rdf
+- FR: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.fr.rdf
+- NL: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.nl.rdf
+- DE: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.de.rdf
