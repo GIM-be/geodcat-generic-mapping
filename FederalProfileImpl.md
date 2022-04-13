@@ -61,7 +61,7 @@ TODO
 | dct:title                      | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
 | dct:description                | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
 | dcat:contactPoint              | ⭕           |                | Currently implemented but mapped to dcat:CatalogRecord instead of dcat:Dataset + Currently implement a logic to define what `vcard:` class must be used between `vcard:Individual`, `vcard:Organization` or `vcard:Kind`. The logic must be simplified to always use `vcard:Organization` and the mapping must be improved. See [Example vcard:Organization](#example-vcardOrganization) |
-| dcat:distribution              | 🚧          |                | See distribution section                                                                                                                                                                                                                                                                                                                                                                 |
+| dcat:distribution              | 🚧          |                | See [distribution section](#dcatdistribution)                                                                                                                                                                                                                                                                                                                                            |
 | dcat:keyword                   | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
 | dcat:theme                     | ❌           |                | See [Example dcat:theme](#example-dcattheme)                                                                                                                                                                                                                                                                                                                                             |
 | dct:subject                    | 🚧          |                | Currently only map the subject URI without labels. See [Example dct:subject](#example-dctsubject)                                                                                                                                                                                                                                                                                        |
@@ -640,6 +640,13 @@ ISO19139:
     <gmd:distance>
       <gco:Distance uom="m">0.25</gco:Distance>
     </gmd:distance>
+    <gmd:equivalentScale>
+      <gmd:MD_RepresentativeFraction>
+        <gmd:denominator>
+          <gco:Integer>10000</gco:Integer>
+        </gmd:denominator>
+      </gmd:MD_RepresentativeFraction>
+    </gmd:equivalentScale>
   </gmd:MD_Resolution>
 </gmd:spatialResolution>
 ```
@@ -653,10 +660,20 @@ Expected GeoDCAT:
 ```xml
 <dcat:spatialResolutionInMeters>
   <dqv:QualityMeasurement>
-    <!-- TODO -->
+    <!-- TODO: What about <dqv:isMeasurementOf></dqv:isMeasurementOf> ? -->
+    <sdmx-attribut:unitMeasure>
+      <skos:Concept rdf:about="http://qudt.org/vocab/unit/M">
+        <skos:prefLabel xml:lang="en">Meter</skos:prefLabel>
+        <skos:inScheme rdf:resource="http://qudt.org/vocab/unit/" />
+      </skos:Concept>
+    </sdmx-attribut:unitMeasure>
+    <dqv:value>0.25</dqv:value>
+    <geodcat:spatialResolutionAsScale>10000</geodcat:spatialResolutionAsScale>
   </dqv:QualityMeasurement> 
 </dcat:spatialResolutionInMeters>
 ```
+
+TODO: In which case do we use `dqv:hasQualityMeasurement` instead of `dcat:spatialResolutionInMeters` ?
 
 ---
 
@@ -776,7 +793,6 @@ Expected GeoDCAT:
   </dct:RightsStatement>
 </dct:accessRights>
 ```
-
 
 ---
 
@@ -959,9 +975,6 @@ Expected GeoDCAT:
 <adms:representationTechnique>
   <skos:Concept rdf:about="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector">
     <skos:prefLabel xml:lang="en">Vector</skos:prefLabel>
-    <skos:prefLabel xml:lang="fr">Vector</skos:prefLabel>
-    <skos:prefLabel xml:lang="nl">Vector</skos:prefLabel>
-    <skos:prefLabel xml:lang="de">Vector</skos:prefLabel>
     <skos:inScheme rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType"/>
   </skos:Concept>
 </adms:representationTechnique>
@@ -969,6 +982,3 @@ Expected GeoDCAT:
 
 See https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType for complete list of possible values with labels:
 - EN: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.en.rdf
-- FR: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.fr.rdf
-- NL: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.nl.rdf
-- DE: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.de.rdf
