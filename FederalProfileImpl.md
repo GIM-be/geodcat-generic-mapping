@@ -55,7 +55,7 @@
 | dct:language       | ❌           |                | See [Example dct:language](#example-dctlanguage) with adapted XPATH from ISO                                                                               |
 | dct:issued         | ❌           |                |                                                                                                                                                            |
 | dct:spatial        | ❌           |                | Replicate current implementation of dataset dct:spatial mapping                                                                                            |
-| dcat:themeTaxonomy | ❌           |                | Create one dcat:themeTaxonomy for each expected dataset and service thesaurus. See [Example dcat:themeTaxonomy](#example-dcatthemeTaxonomy)                |
+| dcat:themeTaxonomy | ❔           |                | Create one dcat:themeTaxonomy for each expected dataset and service thesaurus. See [Example dcat:themeTaxonomy](#example-dcatthemeTaxonomy)                |
 | dct:hasPart        | ✅           |                | No implementation needed                                                                                                                                   |
 | dct:isPartOf       | ❔           |                |                                                                                                                                                            |
 | dcat:record        | ✅           |                | No implementation needed                                                                                                                                   |
