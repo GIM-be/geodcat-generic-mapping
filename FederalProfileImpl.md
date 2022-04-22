@@ -22,6 +22,7 @@
     - [Example dct:accessRights](#example-dctaccessrights)
     - [Example foaf:Organization](#example-foaforganization)
     - [Example adms:representationTechnique](#example-admsrepresentationtechnique)
+    - [Example dcat:themeTaxonomy](#example-dcatthemetaxonomy)
 
 ## Links
 
@@ -35,13 +36,34 @@
   implementation [dcat-iso19139.xsl](https://github.com/geonetwork/geonetwork-microservices/blob/main/modules/services/ogc-api-records/src/main/resources/xslt/ogcapir/formats/dcat/dcat-iso19139.xsl)
   - ❌ : Not implemented / To Implement
   - 🚧 : Partially implemented
-  - ✅ : Implemented / No changes
+  - ✅ : Implemented / No changes needed
   - ⭕ : Wrongly implemented, need changes
   - ❔ : Unknown / to define / to be confirmed
 
 ### dcat:Catalog
 
-TODO
+[Annexe document](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#a-dcat--catalog)
+
+| name               | Init status | Current status | Comment                                                                                                                                                    |
+|--------------------|-------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| dct:title          | ❌           |                |                                                                                                                                                            |
+| dct:description    | ❌           |                |                                                                                                                                                            |
+| dct:publisher      | ❌           |                | See [Example foaf:Organization](#example-foafOrganization) with adapted XPATH from ISO                                                                     |
+| dcat:dataset       | ❌           |                | Dataset described is this record (if dataset metadata). Dataset is currently on the ROOT level, need to be nested in dcat:Catalog                          |
+| dcat:service       | ❌           |                | Service described is this record (if service metadata). Service is currently on the ROOT level, need to be nested in dcat:Catalog                          |
+| foaf:homepage      | ❌           |                | @rdf:resource value always set to "https://www.geo.be/home"                                                                                                |
+| dct:language       | ❌           |                | See [Example dct:language](#example-dctlanguage) with adapted XPATH from ISO                                                                               |
+| dct:issued         | ❌           |                |                                                                                                                                                            |
+| dct:spatial        | ❌           |                | Replicate current implementation of dataset dct:spatial mapping                                                                                            |
+| dcat:themeTaxonomy | ❌           |                | Create one dcat:themeTaxonomy for each expected dataset and service thesaurus. See [Example dcat:themeTaxonomy](#example-dcatthemeTaxonomy)                |
+| dct:hasPart        | ✅           |                | No implementation needed                                                                                                                                   |
+| dct:isPartOf       | ❔           |                |                                                                                                                                                            |
+| dcat:record        | ✅           |                | No implementation needed                                                                                                                                   |
+| dcat:distribution  | ❌           |                | @rdf:resource value set to XML export of the metadata. Example: https://www.geo.be/metadataServices/rest/catalogs/1/resources/<uuid>/xml                   |
+| dcat:catalog       | ✅           |                | No implementation needed                                                                                                                                   |
+| dcat:contactPoint  | ❌           |                | See [Example vcard:Organization](#example-vcardOrganization) with adapted XPATH from ISO and usage of `vcard:Kind` element instead of `vcard:Organization` |
+| dct:identifier     | ❔           |                | Lien vers le XML. Example: https://www.geo.be/metadataServices/rest/catalogs/1/resources/<uuid>/xml                                                        |
+| dcat:theme         | ❌           |                | See [Example dcat:theme](#example-dcattheme)                                                                                                               |
 
 ### dcat:CatalogRecord
 
@@ -97,12 +119,28 @@ TODO
 
 ### dcat:Distribution
 
-TODO
+**TODO**
+[Annexe document](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#d-dcat--distribution)
+
+| name                | Init status | Current status | Comment |
+|---------------------|-------------|----------------|---------|
+| dct:title           |             |                |         |
+| dcat:accessURL      |             |                |         |
+| dct:description     |             |                |         |
+| dct:format          |             |                |         |
+| dcat:mediaType      |             |                |         |
+| dcat:downloadURL    |             |                |         |
+| dcat:compressFormat |             |                |         |
+| dct:conformsTo      |             |                |         |
+| dcat:byteSize       |             |                |         |
+| adms:status         |             |                |         |
+| dct:spatial         |             |                |         |
+| dct:temporal        |             |                |         |
+| dct:type            |             |                |         |
 
 ### dcat:DataService
 
-TODO
-
+**TODO**
 
 ## Examples
 
@@ -982,3 +1020,60 @@ Expected GeoDCAT:
 
 See https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType for complete list of possible values with labels:
 - EN: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.en.rdf
+
+
+### Example dcat:themeTaxonomy
+
+Example of expected thesaurus in DCAT:
+
+```xml
+<dcat:Dataset>
+  <!-- ... -->
+  <dct:language>
+    <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/ENG">
+      <skos:prefLabel xml:lang="en">English</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">anglais</skos:prefLabel>
+      <skos:prefLabel xml:lang="nl">Engels</skos:prefLabel>
+      <skos:prefLabel xml:lang="de">Englisch</skos:prefLabel>
+      <skos:inScheme rdf:resource="https://publications.europa.eu/resource/authority/language"/>
+    </skos:Concept>
+  </dct:language>
+  <!-- ... -->
+  <dct:accessRights>
+    <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/access-right/PUBLIC">
+      <skos:prefLabel xml:lang="en">public</skos:prefLabel>
+      <skos:prefLabel xml:lang="fr">public</skos:prefLabel>
+      <skos:prefLabel xml:lang="nl">openbaar</skos:prefLabel>
+      <skos:prefLabel xml:lang="de">öffentlich</skos:prefLabel>
+      <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/access-right"/>
+    </skos:Concept>
+  </dct:accessRights>
+  <!-- ... -->
+</dcat:Dataset>
+```
+
+Expected output:
+
+```xml
+<dcat:Catalog>
+  <!-- ... -->
+  <dcat:themeTaxonomy>
+    <skos:ConceptScheme rdf:about="https://publications.europa.eu/resource/authority/language">
+      <dct:title xml:lang="en">Language</dct:title>
+      <dct:identifier>http://publications.europa.eu/resource/authority/language</dct:identifier>
+    </skos:ConceptScheme>
+  </dcat:themeTaxonomy>
+  <dcat:themeTaxonomy>
+    <skos:ConceptScheme rdf:about="http://publications.europa.eu/resource/authority/access-right">
+      <dct:title xml:lang="en">Access righ</dct:title>
+      <dct:issued>2016-07-21</dct:issued>
+      <dct:identifier>http://publications.europa.eu/resource/authority/access-right</dct:identifier>
+    </skos:ConceptScheme>
+  </dcat:themeTaxonomy>
+  <!-- ... -->
+</dcat:Catalog>
+```
+
+**Open question:**
+- What to do with thesaurus without machine readable URL such as https://www.eionet.europa.eu/gemet/en/themes ?
+- Querying those URLs for each conversion will have a huge impact on the speed of the conversion. As such, I suggest we maintain an exhaustive list of all the thesauri in a variable inside the XSL containing the title / identifier / issued values. z
