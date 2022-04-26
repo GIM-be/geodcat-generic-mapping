@@ -23,6 +23,7 @@
     - [Example foaf:Organization](#example-foaforganization)
     - [Example adms:representationTechnique](#example-admsrepresentationtechnique)
     - [Example dcat:themeTaxonomy](#example-dcatthemetaxonomy)
+    - [Example dcat:Distribution](#example-dcatdistribution)
 
 ## Links
 
@@ -87,7 +88,7 @@
 | dcat:keyword                   | ⭕           |                | The default language is mapped two times. Issue with `<xsl:template name="LocalisedString" />`                                                                                                                                                                                                                                                                                           |
 | dcat:theme                     | ❌           |                | See [Example dcat:theme](#example-dcattheme)                                                                                                                                                                                                                                                                                                                                             |
 | dct:subject                    | 🚧          |                | Currently only map the subject URI without labels. See [Example dct:subject](#example-dctsubject)                                                                                                                                                                                                                                                                                        |
-| dct:spatial                    | 🚧          |                | Missing the "http://www.opengis.net/ont/geosparql#geoJSONLiteral" format + The `locn:geometry` shouldn't be direct child of `dct:spatial` but insead be inside a `dct:Location` element. See https://github.com/belgif/inspire-dcat/blob/main/exemple.rdf                                                                                                                                |
+| dct:spatial                    | 🚧          |                | Missing the "http://www.opengis.net/ont/geosparql#geoJSONLiteral" format + The `locn:geometry` shouldn't be direct child of `dct:spatial` but instead be inside a `dct:Location` element. See https://github.com/belgif/inspire-dcat/blob/main/exemple.rdf                                                                                                                               |
 | dct:temporal                   | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
 | dct:created                    | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
 | dct:modified                   | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -119,24 +120,34 @@
 
 ### dcat:Distribution
 
-**TODO**
 [Annexe document](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#d-dcat--distribution)
 
-| name                | Init status | Current status | Comment |
-|---------------------|-------------|----------------|---------|
-| dct:title           |             |                |         |
-| dcat:accessURL      |             |                |         |
-| dct:description     |             |                |         |
-| dct:format          |             |                |         |
-| dcat:mediaType      |             |                |         |
-| dcat:downloadURL    |             |                |         |
-| dcat:compressFormat |             |                |         |
-| dct:conformsTo      |             |                |         |
-| dcat:byteSize       |             |                |         |
-| adms:status         |             |                |         |
-| dct:spatial         |             |                |         |
-| dct:temporal        |             |                |         |
-| dct:type            |             |                |         |
+1. During conversion of a dataset (and dataset only), fetch the global atom feed described in
+   the [Federal download service](https://www.geo.be/catalog/details/5cfe8a91-3dc9-4cf6-a40a-6a6d6f3124ab) using the
+   XSLT `document()` function. (Atom feed
+   URL: https://ac.ngi.be/remoteclient-open/GeoBePartners-open/ATOM/Atomfeed-en.xml)
+2. Traverse the atom feed to search for an entry corresponding to the current dataset.
+3. If one is found, fetch the dataset atom feed located in the `/feed/entry/id` element using the XSLT `document()`
+   function and map it as follows
+
+**The current implementation of the dcat:Distribution is solely based on
+the `gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions` and must be removed.**
+
+| name                | Init status | Current status | Comment                                                                                                                     |
+|---------------------|-------------|----------------|-----------------------------------------------------------------------------------------------------------------------------|
+| dct:title           | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dcat:accessURL      | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:description     | ⭕ - ❔       |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:format          | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dcat:mediaType      | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dcat:downloadURL    | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dcat:compressFormat | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:conformsTo      | ⭕ - ❔       |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dcat:byteSize       | ✅           |                |                                                                                                                             |
+| adms:status         | ✅           |                |                                                                                                                             |
+| dct:spatial         | ⭕           |                | Reuse same logic as what is implemented for dataset dct:spatial. See [Example dcat:Distribution](#example-dcatDistribution) |
+| dct:temporal        | ⭕ - ❔       |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:type            | ⭕ - ❔       |                |                                                                                                                             |
 
 ### dcat:DataService
 
@@ -150,6 +161,7 @@
 - [Annexe document: vcard:Address](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#n-vcard-address)
 
 ISO19139:
+
 ```xml
 <gmd:contact>
   <gmd:CI_ResponsibleParty gmd:CI_ResponsibleParty="http://www.isotc211.org/2005/gmd http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd">
@@ -270,6 +282,7 @@ ISO19139:
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <dcat:contactPoint>
   <vcard:Organization>
@@ -296,7 +309,7 @@ Expected GeoDCAT:
         <vcard:country-name xml:lang="de">Belgien</vcard:country-name>
       </vcard:Address>
     </vcard:hasAddress>
-  </vcard:Organization>  
+  </vcard:Organization>
 </dcat:contactPoint>
 ```
 
@@ -588,6 +601,7 @@ See http://publications.europa.eu/resource/authority/language for URL and labels
 ### Example dataset dct:conformsTo
 
 ISO19139:
+
 ```xml
 <gmd:result>
   <gmd:DQ_ConformanceResult>
@@ -628,6 +642,7 @@ ISO19139:
 ```
 
 Expected GeoDCAT result:
+
 ```xml
 <dct:conformsTo>
   <dct:Standard rdf:about="http://data.europa.eu/eli/reg/2010/1089">
@@ -645,6 +660,7 @@ Expected GeoDCAT result:
 ### Example dct:source
 
 ISO19139:
+
 ```xml
 <gmd:aggregationInfo>
   <gmd:MD_AggregateInformation>
@@ -663,6 +679,7 @@ ISO19139:
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <dct:source rdf:resource="<apiUrl>/collections/main/items/fb1e2993-2020-428c-9188-eb5f75e284b9" />
 ```
@@ -672,6 +689,7 @@ Expected GeoDCAT:
 ### Example dcat:spatialResolutionInMeters
 
 ISO19139:
+
 ```xml
 <gmd:spatialResolution>
   <gmd:MD_Resolution>
@@ -695,6 +713,7 @@ Actual GeoDCAT:
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <dcat:spatialResolutionInMeters>
   <dqv:QualityMeasurement>
@@ -702,12 +721,12 @@ Expected GeoDCAT:
     <sdmx-attribut:unitMeasure>
       <skos:Concept rdf:about="http://qudt.org/vocab/unit/M">
         <skos:prefLabel xml:lang="en">Meter</skos:prefLabel>
-        <skos:inScheme rdf:resource="http://qudt.org/vocab/unit/" />
+        <skos:inScheme rdf:resource="http://qudt.org/vocab/unit/"/>
       </skos:Concept>
     </sdmx-attribut:unitMeasure>
     <dqv:value>0.25</dqv:value>
     <geodcat:spatialResolutionAsScale>10000</geodcat:spatialResolutionAsScale>
-  </dqv:QualityMeasurement> 
+  </dqv:QualityMeasurement>
 </dcat:spatialResolutionInMeters>
 ```
 
@@ -717,9 +736,10 @@ TODO: In which case do we use `dqv:hasQualityMeasurement` instead of `dcat:spati
 
 ### Example dct:accessRights
 
-**If based on LimitationsOnPublicAccess codelist:**  
+**If based on LimitationsOnPublicAccess codelist:**
 
 ISO19139:
+
 ```xml
 <gmd:resourceConstraints gmd:resourceConstraints="http://www.isotc211.org/2005/srv http://schemas.opengis.net/iso/19139/20060504/srv/srv.xsd">
   <gmd:MD_LegalConstraints>
@@ -748,6 +768,7 @@ ISO19139:
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <dct:accessRights>
   <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/access-right/PUBLIC">
@@ -762,9 +783,10 @@ Expected GeoDCAT:
 
 See http://publications.europa.eu/resource/authority/access-right for values and labels
 
-**If not based on the LimitationsOnPublicAccess codelist:**  
+**If not based on the LimitationsOnPublicAccess codelist:**
 
 ISO19139:
+
 ```xml
 <gmd:resourceConstraints>
   <gmd:MD_LegalConstraints>
@@ -809,6 +831,7 @@ ISO19139:
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <dct:accessRights>
   <dct:RightsStatement rdf:about="<url of the xlink:href attribute if gmd:otherConstraints is gmx:Anchor and not gco:CharacterString>">
@@ -960,6 +983,7 @@ ISO19139:
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <dct:publisher>
   <foaf:Organization>
@@ -991,12 +1015,12 @@ Expected GeoDCAT:
 </dct:publisher>
 ```
 
-
 ---
 
 ### Example adms:representationTechnique
 
 ISO19139:
+
 ```xml
 <gmd:spatialRepresentationType>
   <gmd:MD_SpatialRepresentationTypeCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector"/>
@@ -1004,11 +1028,13 @@ ISO19139:
 ```
 
 Actual GeoDCAT:
+
 ```xml
 <adms:representationTechnique rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationTypeCode/vector"/>
 ```
 
 Expected GeoDCAT:
+
 ```xml
 <adms:representationTechnique>
   <skos:Concept rdf:about="http://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/vector">
@@ -1018,9 +1044,10 @@ Expected GeoDCAT:
 </adms:representationTechnique>
 ```
 
-See https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType for complete list of possible values with labels:
-- EN: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.en.rdf
+See https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType for complete list of possible values with
+labels:
 
+- EN: https://inspire.ec.europa.eu/metadata-codelist/SpatialRepresentationType/SpatialRepresentationType.en.rdf
 
 ### Example dcat:themeTaxonomy
 
@@ -1052,7 +1079,7 @@ Example of expected thesaurus in DCAT:
 </dcat:Dataset>
 ```
 
-Expected output:
+Expected GeoDCAT:
 
 ```xml
 <dcat:Catalog>
@@ -1075,5 +1102,82 @@ Expected output:
 ```
 
 **Open question:**
-- What to do with thesaurus without machine readable URL such as https://www.eionet.europa.eu/gemet/en/themes ?
-- Querying those URLs for each conversion will have a huge impact on the speed of the conversion. As such, I suggest we maintain an exhaustive list of all the thesauri in a variable inside the XSL containing the title / identifier / issued values. z
+
+- What to do with thesaurus without machine-readable URL such as https://www.eionet.europa.eu/gemet/en/themes ?
+- Querying those URLs for each conversion will have a huge impact on the speed of the conversion. As such, I suggest we
+  maintain an exhaustive list of all the thesauri in a variable inside the XSL containing the title / identifier /
+  issued values.
+
+### Example dcat:Distribution
+
+Dataset atom feed:
+
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss" xml:lang="en">
+  <title>SUVIM station network</title>
+  <subtitle>The Solar Ultraviolet - Visible Irradiance Monitoring network (SUVIM) is formed of observation stations operated by the Royal Belgian Institute for Space Aeronomy (IASB-BIRA)</subtitle>
+  <logo>https://www.geo.be/thumbs/uv-station-suvim.jpg</logo>
+  <link href="http://publish.geo.be/geonetwork/srv/api/records/59129f4b-a61b-467c-9b41-1f92e4338151/attachments/Atomfeed-en.xml" rel="self" hreflang="en" title="feed containing the pre-defined dataset"/>
+  <link href="http://publish.geo.be/geonetwork/srv/api/records/5cfe8a91-3dc9-4cf6-a40a-6a6d6f3124ab/attachments/Atomfeed-en.xml" rel="up" type="application/xml"/>
+  <id>http://publish.geo.be/geonetwork/srv/api/records/59129f4b-a61b-467c-9b41-1f92e4338151/attachments/Atomfeed-en.xml</id>
+  <rights>Copyright (c) 2020, NGI Belgium; all rights reserved</rights>
+  <updated>2021-12-13T13:28:05Z</updated>
+  <author>
+    <name>Royal Belgian Institute for Space Aeronomy (IASB-BIRA)</name>
+    <email>david.bolsee@aeronomie.be</email>
+  </author>
+  <entry>
+    <title>SUVIM station network (EPSG code for projection system: EPSG:4326 - Distribution format: Esri Shapefile)</title>
+    <id>https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip</id>
+    <link href="https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip" type="application/x-shapefile" rel="alternate" hreflang="en"/>
+    <rights>Copyright (c) 2020, NGI Belgium; all rights reserved</rights>
+    <updated>2021-12-13T13:28:05Z</updated>
+    <category term="http://www.opengis.net/def/crs/EPSG/0/EPSG:4326" label="EPSG code for projection system: EPSG:4326"/>
+    <georss:box>49.33 2.54 51.50 6.65</georss:box>
+  </entry>
+</feed>
+```
+
+Expected GeoDCAT:
+
+```xml
+<dcat:distribution>
+  <dcat:Distribution>
+    <dct:title xml:lang="en">SUVIM station network</dct:title>
+    <dcat:accessURL rdf:resource="https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip"/>
+    <!-- Description is currently mapped to //atom:feed/atom:entry/atom:id. Shouldn't it be //atom:feed/atom:subtitle instead ? -->
+    <dct:description>https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip</dct:description>
+    <!-- 1-1 mapping must be defined with https://publications.europa.eu/resource/authority/file-type codelist  -->
+    <dct:format rdf:resource="https://publications.europa.eu/resource/authority/file-type/SHP"/>
+    <!-- 1-1 mapping must be defined with https://www.iana.org/assignments/media-types/media-types.xhtml codelist  -->
+    <dcat:mediaType rdf:resource="https://www.iana.org/assignments/media-types/application/vnd.shp"/>
+    <dcat:downloadURL rdf:resource="https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip"/>
+    <dcat:compressFormat rdf:resource="https://www.iana.org/assignments/media-types/application/vnd.shp"/>
+    <dct:conformsTo rdf:resource="http://www.opengis.net/def/crs/EPSG/0/4326"/>
+    <dct:spatial>
+      <dct:Location>
+        <locn:geometry rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[POLYGON((2.54 51.50,6.65 51.50,6.65 49.33,2.54 49.33,2.54 51.50))]]></locn:geometry>
+        <locn:geometry rdf:datatype="http://www.opengis.net/ont/geosparql#gmlLiteral"><![CDATA[<gml:Envelope srsName="http://www.opengis.net/def/crs/OGC/1.3/CRS84"><gml:lowerCorner>2.54 49.33</gml:lowerCorner><gml:upperCorner>6.65 51.50</gml:upperCorner></gml:Envelope>]]></locn:geometry>
+        <locn:geometry rdf:datatype="https://www.iana.org/assignments/media-types/application/vnd.geo+json"><![CDATA[{"type":"Polygon","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"coordinates":[[[2.54,51.50],[6.65,51.50],[6.65,49.33],[2.54,49.33],[2.54,51.50]]]}]]></locn:geometry>
+        <dcat:bbox rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[POLYGON((2.54 51.50,6.65 51.50,6.65 49.33,2.54 49.33,2.54 51.50))]]></dcat:bbox>
+        <dcat:bbox rdf:datatype="http://www.opengis.net/ont/geosparql#gmlLiteral"><![CDATA[<gml:Envelope srsName="http://www.opengis.net/def/crs/OGC/1.3/CRS84"><gml:lowerCorner>2.54 49.33</gml:lowerCorner><gml:upperCorner>6.65 51.50</gml:upperCorner></gml:Envelope>]]></dcat:bbox>
+        <dcat:bbox rdf:datatype="https://www.iana.org/assignments/media-types/application/vnd.geo+json"><![CDATA[{"type":"Polygon","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"coordinates":[[[2.54,51.50],[6.65,51.50],[6.65,49.33],[2.54,49.33],[2.54,51.50]]]}]]></dcat:bbox>
+      </dct:Location>
+    </dct:spatial>
+    <!-- <dct:temporal /> -->
+    <!-- Based on which field is the dct:type created ? Always download ? -->
+    <dct:type>
+      <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE">
+        <skos:prefLabel xml:lang="en">Downloadable file</skos:prefLabel>
+        <skos:prefLabel xml:lang="fr">Fichier téléchargeable</skos:prefLabel>
+        <skos:prefLabel xml:lang="nl">Downloadbaar bestand</skos:prefLabel>
+        <skos:prefLabel xml:lang="de">Herunterladbare Datei</skos:prefLabel>
+        <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/distribution-type"/>
+      </skos:Concept>
+    </dct:type>
+  </dcat:Distribution>
+</dcat:distribution>
+```
+
+**Note:** each `/feed/entry` must be mapped to its own `dcat:distribution` element.
