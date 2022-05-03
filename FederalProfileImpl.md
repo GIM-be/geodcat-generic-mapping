@@ -24,6 +24,9 @@
     - [Example adms:representationTechnique](#example-admsrepresentationtechnique)
     - [Example dcat:themeTaxonomy](#example-dcatthemetaxonomy)
     - [Example dcat:Distribution](#example-dcatdistribution)
+    - [Example dcat:servesDataset](#example-dcatservesdataset)
+    - [Example service dct:conformsTo](#example-service-dctconformsto)
+    - [Example service dct:type](#example-service-dcttype)
 
 ## Links
 
@@ -151,7 +154,31 @@ the `gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions` and must be r
 
 ### dcat:DataService
 
-**TODO**
+| name                          | Init status | Current status | Comment                                                                                                                                                                                                                    |
+|-------------------------------|-------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| dct:title                     | ⭕           |                | The default language is mapped two times. Issue with <xsl:template name="LocalisedString" />                                                                                                                               |
+| dct:description               | ⭕           |                | The default language is mapped two times. Issue with <xsl:template name="LocalisedString" />                                                                                                                               |
+| dcat:endpointURL              | ✅ - ❔       |                | Currently mapped to `gmd:transferOptions/*/gmd:onLine/*/gmd:linkage/gmd:URL` with removed query parameters.                                                                                                                |
+| dcat:endpointDescription      | ⭕           |                | Need to be removed                                                                                                                                                                                                         |
+| dcat:servesDataset            | ⭕           |                | Currently mapped to Dataset with dcat:CatalogRecord. Must be mapped to dataset URI. See [Example dcat:servesDataset](#example-dcatservesDataset)                                                                           |
+| dct:accessRights              | ⭕           |                | Same as dataset implementation. See [Example dct:accessRights](#example-dctaccessRights)                                                                                                                                   |
+| dcat:keyword                  | ⭕           |                | Same as dataset implementation.                                                                                                                                                                                            |
+| dcat:theme                    | ❌           |                | Same as dataset implementation. See [Example dcat:theme](#example-dcattheme)                                                                                                                                               |
+| dct:created                   | ✅           |                |                                                                                                                                                                                                                            |
+| dct:modified                  | ✅           |                |                                                                                                                                                                                                                            |
+| dct:issued                    | ✅           |                |                                                                                                                                                                                                                            |
+| dct:conformsTo                | ⭕           |                | Currently mapped to service protocol + `gmd:DQ_DomainConsistency` + `gmd:referenceSystemInfo`. Mapping on `gmd:DQ_DomainConsistency` must be removed. See [Example service dct:conformsTo](#example-service-dctconformsTo) |
+| dct:type                      | ⭕           |                | Current mapping OK but miss the skos:Concept detailed element. See [Example service dct:type](#example-service-dcttype)                                                                                                    |
+| geodcat:distributor           | ❌           |                | Role "publisher" currently mapped to `dct:publisher` which is not OK for services. Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                 |
+| geodcat:originator            | ❌           |                | Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                    |
+| geodcat:principalInvestigator | ❌           |                | Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                    |
+| geodcat:processor             | ❌           |                | Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                    |
+| geodcat:resourceProvider      | ❌           |                | Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                    |
+| geodcat:user                  | ❌           |                | Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                    |
+| dct:creator                   | ⭕           |                | Currently mapped to role "author" which is not OK for services. Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                    |
+| geodcat:custodian             | ❌           |                | Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                    |
+| dct:rightsHolder              | ⭕           |                | Currently mapped to role "owner" which is not OK for services. Reuse same logic as dataset `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                     |
+| dct:license                   | ⭕           |                | Same as dataset implementation                                                                                                                                                                                             |
 
 ## Examples
 
@@ -1181,3 +1208,161 @@ Expected GeoDCAT:
 ```
 
 **Note:** each `/feed/entry` must be mapped to its own `dcat:distribution` element.
+
+---
+
+### Example dcat:servesDataset
+
+In ISO19139:
+
+```xml
+<srv:operatesOn uuidref="067c8ccb-50fa-4918-9f6b-6b1248b3bef3"
+                xlink:href="http://csw.geo.be/eng/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full&amp;id=067c8ccb-50fa-4918-9f6b-6b1248b3bef3"/>
+```
+
+Actual GeoDCAT:
+
+```xml
+<dcat:servesDataset rdf:parseType="Resource">
+   <dct:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">067c8ccb-50fa-4918-9f6b-6b1248b3bef3</dct:identifier>
+   <foaf:isPrimaryTopicOf>
+      <dcat:CatalogRecord rdf:about="http://csw.geo.be/eng/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full&amp;id=067c8ccb-50fa-4918-9f6b-6b1248b3bef3"/>
+   </foaf:isPrimaryTopicOf>
+</dcat:servesDataset>
+```
+
+**Note:** Some other cases are implemented but not shown here. All cases can be changed to the new implementation.
+
+Expected GeoDCAT:
+
+```xml
+<dcat:servesDataset rdf:resource="<apiUrl>/collections/main/items/067c8ccb-50fa-4918-9f6b-6b1248b3bef3" />
+```
+
+---
+
+### Example service dct:conformsTo
+
+In ISO19139:
+
+```xml
+<gmd:MD_Metadata>
+  <!-- ... -->
+  <gmd:referenceSystemInfo>
+    <gmd:MD_ReferenceSystem>
+      <gmd:referenceSystemIdentifier>
+        <gmd:RS_Identifier>
+          <gmd:code>
+            <gco:CharacterString>31370</gco:CharacterString>
+          </gmd:code>
+        </gmd:RS_Identifier>
+      </gmd:referenceSystemIdentifier>
+    </gmd:MD_ReferenceSystem>
+  </gmd:referenceSystemInfo>
+  <gmd:referenceSystemInfo>
+    <gmd:MD_ReferenceSystem>
+      <gmd:referenceSystemIdentifier>
+        <gmd:RS_Identifier>
+          <gmd:code>
+            <gco:CharacterString>3812</gco:CharacterString>
+          </gmd:code>
+        </gmd:RS_Identifier>
+      </gmd:referenceSystemIdentifier>
+    </gmd:MD_ReferenceSystem>
+  </gmd:referenceSystemInfo>
+
+  <gmd:distributionInfo>
+    <gmd:MD_Distribution>
+      <gmd:transferOptions>
+        <gmd:MD_DigitalTransferOptions>
+          <gmd:onLine>
+            <gmd:CI_OnlineResource>
+              <gmd:linkage>
+                <gmd:URL>https://wms.ngi.be/inspire23/utility/wms?service=wms&amp;version=1.3.0&amp;request=GetCapabilities</gmd:URL>
+              </gmd:linkage>
+              <gmd:protocol>
+                <gco:CharacterString>OGC:WMS</gco:CharacterString>
+              </gmd:protocol>
+              <!-- ... -->
+            </gmd:CI_OnlineResource>
+          </gmd:onLine>
+        </gmd:MD_DigitalTransferOptions>
+      </gmd:transferOptions>
+    </gmd:MD_Distribution>
+  </gmd:distributionInfo>
+  <!-- ... -->
+</gmd:MD_Metadata>
+```
+
+Actual GeoDCAT:
+
+```xml
+<dcat:DataService>
+  <!-- ... -->
+  <dct:conformsTo rdf:parseType="Resource">
+    <rdf:type rdf:resource="http://purl.org/dc/terms/Standard"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <dct:type rdf:resource="http://inspire.ec.europa.eu/glossary/SpatialReferenceSystem"/>
+    <dct:title xml:lang="en">31370</dct:title>
+  </dct:conformsTo>
+  <dct:conformsTo rdf:parseType="Resource">
+    <rdf:type rdf:resource="http://purl.org/dc/terms/Standard"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <dct:type rdf:resource="http://inspire.ec.europa.eu/glossary/SpatialReferenceSystem"/>
+    <dct:title xml:lang="en">3812</dct:title>
+  </dct:conformsTo>
+
+  <dct:conformsTo rdf:resource="http://www.opengeospatial.org/standards/wms"/>
+  <!-- ... -->
+</dcat:DataService>
+```
+
+Expected GeoDCAt:
+
+```xml
+<dcat:DataService>
+  <!-- ... -->
+  <dct:conformsTo rdf:resource="http://www.opengis.net/def/crs/EPSG/0/31370" />
+  <dct:conformsTo rdf:resource="http://www.opengis.net/def/crs/EPSG/0/3812" />
+  <dct:conformsTo rdf:resource="http://www.opengis.net/def/serviceType/ogc/wms"/>
+  <!-- ... -->
+</dcat:DataService>
+```
+
+List of protocol values: https://inspire.ec.europa.eu/metadata-codelist/ProtocolValue
+
+---
+
+### Example service dct:type
+
+Actual ISO19139:
+
+```xml
+<srv:serviceType>
+  <gco:LocalName>view</gco:LocalName>
+</srv:serviceType>
+```
+
+Actual GeoDCAT:
+
+```xml
+<dct:type rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/view"/>
+```
+
+Expected GeoDCAT:
+
+```xml
+<dct:type>
+  <skos:Concept rdf:about="http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType/view">
+    <skos:prefLabel xml:lang="en">View Service</skos:prefLabel>
+    <skos:prefLabel xml:lang="nl">Raadpleegdienst</skos:prefLabel>
+    <skos:prefLabel xml:lang="fr">Service de consultation</skos:prefLabel>
+    <skos:prefLabel xml:lang="de">Darstellungsdienste</skos:prefLabel>
+    <skos:inScheme rdf:resource="http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType"/>
+  </skos:Concept>
+</dct:type>
+```
+
+See http://inspire.ec.europa.eu/metadata-codelist/SpatialDataServiceType for list of labels.
+
+---
