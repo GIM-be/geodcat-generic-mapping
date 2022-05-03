@@ -19,6 +19,7 @@
     - [Example dataset dct:conformsTo](#example-dataset-dctconformsto)
     - [Example dct:source](#example-dctsource)
     - [Example dcat:spatialResolutionInMeters](#example-dcatspatialresolutioninmeters)
+    - [Example dqv:hasQualityMeasurement](#example-dqvhasqualitymeasurement)
     - [Example dct:accessRights](#example-dctaccessrights)
     - [Example foaf:Organization](#example-foaforganization)
     - [Example adms:representationTechnique](#example-admsrepresentationtechnique)
@@ -104,10 +105,10 @@
 | dct:provenance                 | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
 | dct:conformsTo                 | ❌           |                | Remove current implementation + Remove implementation of prov:wasUsedBy + Implement mapping. See [Example dataset dct:conformsTo](#example-dataset-dctconformsTo)                                                                                                                                                                                                                        |
 | dct:source                     | ❌           |                | See [Example dct:source](#example-dctsource)                                                                                                                                                                                                                                                                                                                                             |
-| dcat:spatialResolutionInMeters | ⭕ - ❔       |                | Remove current implementation of `<xsl:template name="SpatialResolution" />` + Implement mapping. See [Example dcat:spatialResolutionInMeters](#example-dcatspatialResolutionInMeters)                                                                                                                                                                                                   |
-| dqv:hasQualityMeasurement      | ❌ - ❔       |                | See [Example dcat:spatialResolutionInMeters](#example-dcatspatialResolutionInMeters)                                                                                                                                                                                                                                                                                                     |
-| dct:accessRights               | ⭕ - ❔       |                | Mapped xpath is currently incorrect + Constraints based on the LimitationOnPublicAccess codelist must be mapped to a thesaurus. See [Example dct:accessRights](#example-dctaccessRights)                                                                                                                                                                                                 |
-| adms:sample                    | ✅ - ❔       |                |                                                                                                                                                                                                                                                                                                                                                                                          |
+| dcat:spatialResolutionInMeters | ⭕           |                | (If raster dataset) Remove current implementation of `<xsl:template name="SpatialResolution" />` + Implement mapping. See [Example dcat:spatialResolutionInMeters](#example-dcatspatialResolutionInMeters)                                                                                                                                                                               |
+| dqv:hasQualityMeasurement      | ❌           |                | (If vector dataset) See [Example dqv:hasQualityMeasurement](#example-dqvhasQualityMeasurement)                                                                                                                                                                                                                                                                                           |
+| dct:accessRights               | ⭕           |                | Mapped xpath is currently incorrect, must only include constraint based on LimitationOnPublicAccess codelist + must be mapped to a thesaurus. See [Example dct:accessRights](#example-dctaccessRights)                                                                                                                                                                                   |
+| adms:sample                    | ✅           |                |                                                                                                                                                                                                                                                                                                                                                                                          |
 | dct:publisher                  | ⭕           |                | Currently implement a logic to define what `foaf:` class must be used between `foaf:Person`, `foaf:Organization` or `foaf:Agent`. The logic must be simplified to always use the `foaf:Organization` and the mapping improved. See [Example foaf:Organization](#example-foafOrganization)                                                                                                |
 | geodcat:custodian              | ❌           |                | Reuse same logic as `dct:publisher`. See [Example foaf:Organization](#example-foafOrganization)                                                                                                                                                                                                                                                                                          |
 | dct:creator                    | ⭕           |                | Same comment as `dct:publisher`                                                                                                                                                                                                                                                                                                                                                          |
@@ -153,6 +154,8 @@ the `gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions` and must be r
 | dct:type            | ✅           |                |                                                                                                                             |
 
 ### dcat:DataService
+
+[Annexe document](https://github.com/belgif/inspire-dcat/blob/main/DCATFederalProfile.md#c-dcat--dataservice)
 
 | name                          | Init status | Current status | Comment                                                                                                                                                                                                                    |
 |-------------------------------|-------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -744,7 +747,6 @@ Expected GeoDCAT:
 ```xml
 <dcat:spatialResolutionInMeters>
   <dqv:QualityMeasurement>
-    <!-- TODO: What about <dqv:isMeasurementOf></dqv:isMeasurementOf> ? -->
     <sdmx-attribut:unitMeasure>
       <skos:Concept rdf:about="http://qudt.org/vocab/unit/M">
         <skos:prefLabel xml:lang="en">Meter</skos:prefLabel>
@@ -752,18 +754,51 @@ Expected GeoDCAT:
       </skos:Concept>
     </sdmx-attribut:unitMeasure>
     <dqv:value>0.25</dqv:value>
-    <geodcat:spatialResolutionAsScale>10000</geodcat:spatialResolutionAsScale>
   </dqv:QualityMeasurement>
 </dcat:spatialResolutionInMeters>
 ```
 
-TODO: In which case do we use `dqv:hasQualityMeasurement` instead of `dcat:spatialResolutionInMeters` ?
+---
+
+### Example dqv:hasQualityMeasurement
+
+ISO19139:
+
+```xml
+<gmd:spatialResolution>
+  <gmd:MD_Resolution>
+    <gmd:distance>
+      <gco:Distance uom="m">0.25</gco:Distance>
+    </gmd:distance>
+    <gmd:equivalentScale>
+      <gmd:MD_RepresentativeFraction>
+        <gmd:denominator>
+          <gco:Integer>10000</gco:Integer>
+        </gmd:denominator>
+      </gmd:MD_RepresentativeFraction>
+    </gmd:equivalentScale>
+  </gmd:MD_Resolution>
+</gmd:spatialResolution>
+```
+
+Actual GeoDCAT:
+```xml
+<dcat:spatialResolutionInMeters rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.25</dcat:spatialResolutionInMeters>
+```
+
+Expected GeoDCAT:
+
+```xml
+<dqv:hasQualityMeasurement>
+  <dqv:QualityMeasurement>
+    <geodcat:spatialResolutionAsScale>10000</geodcat:spatialResolutionAsScale>
+  </dqv:QualityMeasurement>
+</dqv:hasQualityMeasurement>
+```
 
 ---
 
 ### Example dct:accessRights
-
-**If based on LimitationsOnPublicAccess codelist:**
 
 ISO19139:
 
@@ -809,78 +844,6 @@ Expected GeoDCAT:
 ```
 
 See http://publications.europa.eu/resource/authority/access-right for values and labels
-
-**If not based on the LimitationsOnPublicAccess codelist:**
-
-ISO19139:
-
-```xml
-<gmd:resourceConstraints>
-  <gmd:MD_LegalConstraints>
-    <gmd:useConstraints>
-      <gmd:MD_RestrictionCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_RestrictionCode"
-                              codeListValue="otherRestrictions"/>
-    </gmd:useConstraints>
-    <gmd:otherConstraints xsi:type="gmd:PT_FreeText_PropertyType">
-      <gco:CharacterString xmlns:gco="http://www.isotc211.org/2005/gco">•The custodian of the resource holds the rights of property (including the rights of intellectual property) to the geographic files
-        •The custodian grants the user the right to use the data for his internal use.
-        •Commercial use of the data under any form is strictly forbidden
-        •Custodian’s name must be mentioned each time the data are being used publically.</gco:CharacterString>
-      <gmd:PT_FreeText>
-        <gmd:textGroup>
-          <gmd:LocalisedCharacterString locale="#EN">•The custodian of the resource holds the rights of property (including the rights of intellectual property) to the geographic files
-            •The custodian grants the user the right to use the data for his internal use.
-            •Commercial use of the data under any form is strictly forbidden
-            •Custodian’s name must be mentioned each time the data are being used publically.</gmd:LocalisedCharacterString>
-        </gmd:textGroup>
-        <gmd:textGroup>
-          <gmd:LocalisedCharacterString locale="#FR">•Le gestionnaire du jeu de données tel qu’il est défini plus haut possède les droits de propriété (y compris les droits de propriété intellectuelle) se rapportant aux fichiers.
-            • Le gestionnaire accorde au client le droit d’utiliser les données pour son usage interne.
-            • L’usage des données à des fins commerciales, sous quelque forme que ce soit, est formellement interdit.
-            • Le nom du gestionnaire doit apparaître lors de chaque utilisation publique des données.</gmd:LocalisedCharacterString>
-        </gmd:textGroup>
-        <gmd:textGroup>
-          <gmd:LocalisedCharacterString locale="#NL">•De beheerder van de bron bezit de eigendomsrechten (ook de rechten op de intellectuele eigendom) op de geografische bestanden
-            • De beheerder geeft de klant het recht de gegevens te gebruiken voor intern gebruik
-            •Het commercieel gebruik van de gegevens onder welke vorm dan ook is strikt verboden
-            •De naam van de beheerder moet elke keer vermeld worden als de gegevens publiek gebruikt worden.</gmd:LocalisedCharacterString>
-        </gmd:textGroup>
-        <gmd:textGroup>
-          <gmd:LocalisedCharacterString locale="#DE">•Der Datensatzverwalter wie höher beschrieben besitzt die Eigentumsrechte (geistiges Eigentum einbegriffen) über die Dateien.
-            • Der Verwalter gewährt dem Kunden das Recht, die Daten intern zu benutzen.
-            • Die Daten zu irgendwelchen kommerziellen Zwecken zu benutzen ist strikt verboten.
-            • Der Name des Verwalters muss bei jeder öffentlichen Benutzung der Daten gemeldet werden.</gmd:LocalisedCharacterString>
-        </gmd:textGroup>
-      </gmd:PT_FreeText>
-    </gmd:otherConstraints>
-  </gmd:MD_LegalConstraints>
-</gmd:resourceConstraints>
-```
-
-Expected GeoDCAT:
-
-```xml
-<dct:accessRights>
-  <dct:RightsStatement rdf:about="<url of the xlink:href attribute if gmd:otherConstraints is gmx:Anchor and not gco:CharacterString>">
-    <rdfs:label xml:lang="en">•The custodian of the resource holds the rights of property (including the rights of intellectual property) to the geographic files
-      •The custodian grants the user the right to use the data for his internal use.
-      •Commercial use of the data under any form is strictly forbidden
-      •Custodian’s name must be mentioned each time the data are being used publically.</rdfs:label>
-    <rdfs:label xml:lang="fr">•Le gestionnaire du jeu de données tel qu’il est défini plus haut possède les droits de propriété (y compris les droits de propriété intellectuelle) se rapportant aux fichiers.
-      • Le gestionnaire accorde au client le droit d’utiliser les données pour son usage interne.
-      • L’usage des données à des fins commerciales, sous quelque forme que ce soit, est formellement interdit.
-      • Le nom du gestionnaire doit apparaître lors de chaque utilisation publique des données.</rdfs:label>
-    <rdfs:label xml:lang="nl">•De beheerder van de bron bezit de eigendomsrechten (ook de rechten op de intellectuele eigendom) op de geografische bestanden
-      • De beheerder geeft de klant het recht de gegevens te gebruiken voor intern gebruik
-      •Het commercieel gebruik van de gegevens onder welke vorm dan ook is strikt verboden
-      •De naam van de beheerder moet elke keer vermeld worden als de gegevens publiek gebruikt worden.</rdfs:label>
-    <rdfs:label xml:lang="de">•Der Datensatzverwalter wie höher beschrieben besitzt die Eigentumsrechte (geistiges Eigentum einbegriffen) über die Dateien.
-      • Der Verwalter gewährt dem Kunden das Recht, die Daten intern zu benutzen.
-      • Die Daten zu irgendwelchen kommerziellen Zwecken zu benutzen ist strikt verboten.
-      • Der Name des Verwalters muss bei jeder öffentlichen Benutzung der Daten gemeldet werden.</rdfs:label>
-  </dct:RightsStatement>
-</dct:accessRights>
-```
 
 ---
 
@@ -1018,7 +981,6 @@ Expected GeoDCAT:
     <foaf:name xml:lang="fr">SPF Finances - Administration Générale de la Documentation Patrimoniale (AGDP)</foaf:name>
     <foaf:name xml:lang="nl">FOD Financien - Algemene Administratie van de Patrimoniumdocumentatie (AAPD)</foaf:name>
     <foaf:name xml:lang="de">FOD Finanzen - Generalverwaltung Vermögensdokumentation (GVVD)</foaf:name>
-    <!-- dct:type ? -->
     <foaf:mbox rdf:resource="datadelivery@minfin.fed.be"/>
     <foaf:workplaceHomepage rdf:resource="https://finance.belgium.be/en/experts-partners/open-data-patrimony"/>
     <locn:address>
