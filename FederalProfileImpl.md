@@ -140,17 +140,17 @@ the `gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions` and must be r
 |---------------------|-------------|----------------|-----------------------------------------------------------------------------------------------------------------------------|
 | dct:title           | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
 | dcat:accessURL      | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
-| dct:description     | ⭕ - ❔       |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:description     | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
 | dct:format          | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
 | dcat:mediaType      | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
 | dcat:downloadURL    | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
 | dcat:compressFormat | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
-| dct:conformsTo      | ⭕ - ❔       |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:conformsTo      | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
 | dcat:byteSize       | ✅           |                |                                                                                                                             |
 | adms:status         | ✅           |                |                                                                                                                             |
 | dct:spatial         | ⭕           |                | Reuse same logic as what is implemented for dataset dct:spatial. See [Example dcat:Distribution](#example-dcatDistribution) |
-| dct:temporal        | ⭕ - ❔       |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
-| dct:type            | ⭕ - ❔       |                |                                                                                                                             |
+| dct:temporal        | ⭕           |                | See [Example dcat:Distribution](#example-dcatDistribution)                                                                  |
+| dct:type            | ✅           |                |                                                                                                                             |
 
 ### dcat:DataService
 
@@ -1173,8 +1173,7 @@ Expected GeoDCAT:
   <dcat:Distribution>
     <dct:title xml:lang="en">SUVIM station network</dct:title>
     <dcat:accessURL rdf:resource="https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip"/>
-    <!-- Description is currently mapped to //atom:feed/atom:entry/atom:id. Shouldn't it be //atom:feed/atom:subtitle instead ? -->
-    <dct:description>https://ac.ngi.be/remoteclient-open/GeoBePartners-open/BIRA-IASB/59129f4b-a61b-467c-9b41-1f92e4338151_x-shapefile_4326.zip</dct:description>
+    <dct:description>The Solar Ultraviolet - Visible Irradiance Monitoring network (SUVIM) is formed of observation stations operated by the Royal Belgian Institute for Space Aeronomy (IASB-BIRA)</dct:description>
     <!-- 1-1 mapping must be defined with https://publications.europa.eu/resource/authority/file-type codelist  -->
     <dct:format rdf:resource="https://publications.europa.eu/resource/authority/file-type/SHP"/>
     <!-- 1-1 mapping must be defined with https://www.iana.org/assignments/media-types/media-types.xhtml codelist  -->
@@ -1193,16 +1192,6 @@ Expected GeoDCAT:
       </dct:Location>
     </dct:spatial>
     <!-- <dct:temporal /> -->
-    <!-- Based on which field is the dct:type created ? Always download ? -->
-    <dct:type>
-      <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE">
-        <skos:prefLabel xml:lang="en">Downloadable file</skos:prefLabel>
-        <skos:prefLabel xml:lang="fr">Fichier téléchargeable</skos:prefLabel>
-        <skos:prefLabel xml:lang="nl">Downloadbaar bestand</skos:prefLabel>
-        <skos:prefLabel xml:lang="de">Herunterladbare Datei</skos:prefLabel>
-        <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/distribution-type"/>
-      </skos:Concept>
-    </dct:type>
   </dcat:Distribution>
 </dcat:distribution>
 ```
