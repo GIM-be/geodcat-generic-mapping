@@ -51,18 +51,18 @@
 
 | name               | Init status | Current status | Comment                                                                                                                                                    |
 |--------------------|-------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| dct:title          | ❌           |                |                                                                                                                                                            |
-| dct:description    | ❌           |                |                                                                                                                                                            |
-| dct:publisher      | ❌           |                | See [Example foaf:Organization](#example-foafOrganization) with adapted XPATH from ISO                                                                     |
+| dct:title          | ❌           |                | Must be hardcoded value                                                                                                                                    |
+| dct:description    | ❌           |                | Must be hardcoded value                                                                                                                                    |
+| dct:publisher      | ❌           |                | Must be hardcoded value                                                                                                                                    |
 | dcat:dataset       | ❌           |                | Dataset described is this record (if dataset metadata). Dataset is currently on the ROOT level, need to be nested in dcat:Catalog                          |
 | dcat:service       | ❌           |                | Service described is this record (if service metadata). Service is currently on the ROOT level, need to be nested in dcat:Catalog                          |
-| foaf:homepage      | ❌           |                | @rdf:resource value always set to "https://www.geo.be/home"                                                                                                |
+| foaf:homepage      | ❌           |                | Must be hardcoded value. @rdf:resource value always set to "https://www.geo.be/home"                                                                       |
 | dct:language       | ❌           |                | See [Example dct:language](#example-dctlanguage) with adapted XPATH from ISO                                                                               |
 | dct:issued         | ❌           |                |                                                                                                                                                            |
 | dct:spatial        | ❌           |                | Replicate current implementation of dataset dct:spatial mapping                                                                                            |
-| dcat:themeTaxonomy | ❔           |                | Create one dcat:themeTaxonomy for each expected dataset and service thesaurus. See [Example dcat:themeTaxonomy](#example-dcatthemeTaxonomy)                |
+| dcat:themeTaxonomy | ❌           |                | Create one dcat:themeTaxonomy for each expected dataset and service thesaurus. See [Example dcat:themeTaxonomy](#example-dcatthemeTaxonomy)                |
 | dct:hasPart        | ✅           |                | No implementation needed                                                                                                                                   |
-| dct:isPartOf       | ❔           |                |                                                                                                                                                            |
+| dct:isPartOf       | ❌           |                | Must contain the URL of the full GeoDCAT export = `<micro_service_url>/collections/main/items`                                                             |
 | dcat:record        | ✅           |                | No implementation needed                                                                                                                                   |
 | dcat:distribution  | ❌           |                | @rdf:resource value set to XML export of the metadata. Example: https://www.geo.be/metadataServices/rest/catalogs/1/resources/{uuid}/xml                   |
 | dcat:catalog       | ✅           |                | No implementation needed                                                                                                                                   |
@@ -1090,12 +1090,11 @@ Expected GeoDCAT:
 </dcat:Catalog>
 ```
 
-**Open question:**
+**Remarks:**
 
-- What to do with thesaurus without machine-readable URL such as https://www.eionet.europa.eu/gemet/en/themes ?
-- Querying those URLs for each conversion will have a huge impact on the speed of the conversion. As such, I suggest we
-  maintain an exhaustive list of all the thesauri in a variable inside the XSL containing the title / identifier /
-  issued values.
+- For the implementation, keep as much local version of thesauri as possible and use these versions for the mapping
+- In case we don't have a local version, fallback on querying the URL as an attempt to gather the information
+- If the query returns an HTML, skip this `dcat:themeTaxonomy`
 
 ### Example dcat:Distribution
 
