@@ -54,8 +54,8 @@
 | dct:title          | ❌           |                | Must be hardcoded value                                                                                                                                    |
 | dct:description    | ❌           |                | Must be hardcoded value                                                                                                                                    |
 | dct:publisher      | ❌           |                | Must be hardcoded value                                                                                                                                    |
-| dcat:dataset       | ❌           |                | Dataset described is this record (if dataset metadata). Dataset is currently on the ROOT level, need to be nested in dcat:Catalog                          |
-| dcat:service       | ❌           |                | Service described is this record (if service metadata). Service is currently on the ROOT level, need to be nested in dcat:Catalog                          |
+| dcat:dataset       | ❌           |                | Datasets described is this catalog or this page of the catalog. Dataset is currently on the ROOT level, need to be nested in dcat:Catalog                  |
+| dcat:service       | ❌           |                | Services described is this catalog or this page of the catalog. Service is currently on the ROOT level, need to be nested in dcat:Catalog                  |
 | foaf:homepage      | ❌           |                | Must be hardcoded value. @rdf:resource value always set to "https://www.geo.be/home"                                                                       |
 | dct:language       | ❌           |                | See [Example dct:language](#example-dctlanguage) with adapted XPATH from ISO                                                                               |
 | dct:issued         | ❌           |                |                                                                                                                                                            |
