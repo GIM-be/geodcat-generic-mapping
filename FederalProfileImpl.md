@@ -64,7 +64,7 @@
 | dct:hasPart        | ✅           | ✅              | No implementation needed                                                                                                                                   |
 | dct:isPartOf       | ❌           | ✅              | Must contain the URL of the full GeoDCAT export = `<micro_service_url>/collections/main/items`                                                             |
 | dcat:record        | ✅           | ✅              | No implementation needed                                                                                                                                   |
-| dcat:distribution  | ❌           |                | @rdf:resource value set to XML export of the metadata. Example: https://www.geo.be/metadataServices/rest/catalogs/1/resources/{uuid}/xml                   |
+| dcat:distribution  | ❔           |                | @rdf:resource value set to XML export of the metadata. Example: https://www.geo.be/metadataServices/rest/catalogs/1/resources/{uuid}/xml                   |
 | dcat:catalog       | ✅           | ✅              | No implementation needed                                                                                                                                   |
 | dcat:contactPoint  | ❔           | ✅              | See [Example vcard:Organization](#example-vcardOrganization) with adapted XPATH from ISO and usage of `vcard:Kind` element instead of `vcard:Organization` |
 | dct:identifier     | ❔           |                | Lien vers le XML. Example: https://www.geo.be/metadataServices/rest/catalogs/1/resources/{uuid}/xml                                                        |
